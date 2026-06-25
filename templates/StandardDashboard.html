@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Availability and Your Bookings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <h1>Car Park System</h1>
+    <div class="upcoming-bookings-panel">
+        <h3>Next Booking</h3>
+        <div id="next-booking"></div>
+    </div>
+
+    <div class="current-session">
+        <h3>Current User</h3>
+        <div id="current-user"></div>
+        <br>
+        <button onclick="logOut()">Log Out</button>
+    </div>
+
+    <h2>Select Date</h2>
+    <input type="date" id="bookingDate">
+    <button onclick="loadFloors()">Load Floors</button>
+
+    <div id ="container">
+    <h2>Parking Floor Availability</h2>
+    <table border="3">
+        <thead>
+            <tr>
+                <th>Floor ID</th>
+                <th>Floor Name</th>
+                <th>Available Spaces</th>
+            </tr>
+        </thead>
+
+        <tbody id="floor-table">
+            <!-- JS will fill this -->
+        </tbody>
+    </table>
+
+    <h2>My Bookings</h2>
+
+    <table border="3">
+        <thead>
+            <tr>
+                <th>Booking Number</th>
+                <th>Floor</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+
+        <tbody id="booking-table">
+            <!-- JS fills this -->
+        </tbody>
+    </table>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/StandardDashboard.js') }}"></script>
+</body>
+
+</html>
