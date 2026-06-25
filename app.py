@@ -15,7 +15,7 @@ def index():
 def admin_dashboard():
     if session.get('isAdmin') != 1:
         return redirect(url_for('standard_dashboard')) #loads standard dashboard if not an admin
-    
+
     return render_template("AdminDashboard.html") #loads admin dashboard if user is admin
 
 @app.route("/standard-dashboard")
@@ -26,10 +26,11 @@ def standard_dashboard():
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
-    username = request.form.get('username', '').strip() #removes any spaces before or after username 
+    username = request.form.get('username', '').strip() #removes any spaces before or after username
+    username =username.lower()
     userPassword = request.form.get('password', '').strip() #removes any spaces before or after password
 
-    if comparePass(username, userPassword): #checks if the enteered password is correct 
+    if comparePass(username, userPassword): #checks if the enteered password is correct
 
         db = get_db()
         user = db.execute(
@@ -44,7 +45,7 @@ def login():
             return redirect(url_for('admin_dashboard')) #if user is an admin, they are redirected to the admin dashboard
         else:
             return redirect(url_for('standard_dashboard')) #if user is not an admin, they are redirected to the standard dashboard
-        
+
     return render_template('index.html')
 
 @app.route('/logout', methods=['POST'])
@@ -78,11 +79,11 @@ def register():
     try:
         register_user(firstName, lastName, username, hash_password(password)) #adds the credentials and user details to the 'users' table
     except sqlite3.IntegrityError: #error for if a username that already exists is being registered
-        return jsonify({"error": "Username already exists."}), 400 
+        return jsonify({"error": "Username already exists."}), 400
     except Exception: #all other errors
         return jsonify({"error": "Registration failed due to server error."}), 500
 
-    return jsonify({"message": "Registration successful!"}), 200 
+    return jsonify({"message": "Registration successful!"}), 200
 
 @app.route("/floors") #returns all data about each floor and its availability on a date
 def get_floors():
@@ -94,12 +95,12 @@ def get_floors():
     db = get_db()
 
     floors = db.execute("""
-        SELECT 
+        SELECT
             f.floorID,
             f.floorName,
             fa.availableSpaces
         FROM carparkFloors f
-        JOIN floorAvailability fa 
+        JOIN floorAvailability fa
             ON f.floorID = fa.floorID
         WHERE fa.date = ?
     """, (date,)).fetchall()
@@ -149,28 +150,28 @@ def cancel_booking():
     booking = db.execute("""
         SELECT parkingFloor, bookingDate
         FROM bookings
-        WHERE bookingID = ?                         
+        WHERE bookingID = ?
     """, (bookingID,)).fetchone()
 
-    #updates floor availability 
+    #updates floor availability
     db.execute("""
         UPDATE floorAvailability
         SET availableSpaces = availableSpaces + 1
         WHERE floorID = ?
-        AND date = ?           
+        AND date = ?
     """, (booking['parkingFloor'], booking['bookingDate']))
 
     #booking removed from users active bookings
     db.execute("""
         DELETE FROM bookings
-        WHERE bookingID = ?      
+        WHERE bookingID = ?
     """, (bookingID,))
 
     db.commit()
 
     return jsonify({"message": "Booking cancelled"})
 
-    
+
 
 @app.route('/mybookings') #returns all information about all bookings for a particular user
 def my_bookings():
@@ -206,7 +207,7 @@ def all_bookings():
     db = get_db()
 
     rows = db.execute("""
-        SELECT 
+        SELECT
             b.bookingID,
             b.bookingDate,
             f.floorName,
