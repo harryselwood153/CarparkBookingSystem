@@ -1,8 +1,12 @@
 import sqlite3
 import bcrypt
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "carpark.db")
 
 def get_db(): #establishes a connection with the SQLite database
-    db = sqlite3.connect("carpark.db")
+    db = sqlite3.connect(DB_PATH)
     db.row_factory = sqlite3.Row
     return db
 
